@@ -7,67 +7,38 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
-
   :root {
-    --purple: #534AB7;
-    --purple-light: #EEEDFE;
-    --purple-mid: #AFA9EC;
-    --teal: #1D9E75;
-    --teal-light: #E1F5EE;
-    --coral: #D85A30;
-    --coral-light: #FAECE7;
-    --bg: #F5F5F7;
-    --card: #FFFFFF;
-    --text: #1a1a2e;
-    --muted: #6b7280;
-    --border: #e5e7eb;
+    --purple: #534AB7; --purple-light: #EEEDFE; --purple-mid: #AFA9EC;
+    --teal: #1D9E75; --teal-light: #E1F5EE;
+    --coral: #D85A30; --coral-light: #FAECE7;
+    --bg: #F5F5F7; --card: #FFFFFF; --text: #1a1a2e; --muted: #6b7280; --border: #e5e7eb;
   }
   body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
-
-  /* NAV */
   nav { background: var(--card); border-bottom: 1px solid var(--border); padding: 0 24px; display: flex; align-items: center; justify-content: space-between; height: 56px; position: sticky; top: 0; z-index: 100; }
   .nav-logo { display: flex; align-items: center; gap: 8px; font-size: 16px; font-weight: 600; color: var(--text); }
   .nav-logo .pulse-icon { width: 32px; height: 32px; background: var(--purple); border-radius: 8px; display: flex; align-items: center; justify-content: center; }
   .nav-right { display: flex; align-items: center; gap: 12px; }
   .country-select { font-size: 13px; padding: 6px 12px; border-radius: 8px; border: 1px solid var(--border); background: var(--card); color: var(--text); cursor: pointer; }
   .live-badge { background: #dcfce7; color: #166534; font-size: 11px; font-weight: 600; padding: 3px 8px; border-radius: 20px; display: flex; align-items: center; gap: 4px; }
-  .live-dot { width: 6px; height: 6px; background: #16a34a; border-radius: 50%; animation: pulse 1.5s infinite; }
-  @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+  .live-dot { width: 6px; height: 6px; background: #16a34a; border-radius: 50%; animation: blink 1.5s infinite; }
+  @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
   .avatar { width: 32px; height: 32px; background: var(--purple-light); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 600; color: var(--purple); }
-
-  /* DATA SOURCE BADGE */
-  .data-badge { font-size: 11px; padding: 3px 8px; border-radius: 20px; font-weight: 600; }
-  .data-badge.real { background: #dcfce7; color: #166534; }
-  .data-badge.demo { background: #fef9c3; color: #854d0e; }
-
-  /* LOADING */
-  .loading-bar { height: 2px; background: var(--purple); position: fixed; top: 0; left: 0; z-index: 200; transition: width 0.3s; }
-
-  /* MAIN */
+  .data-badge { font-size: 11px; font-weight: 600; padding: 3px 10px; border-radius: 20px; transition: all 0.3s; }
   main { padding: 20px 24px; max-width: 1200px; margin: 0 auto; }
-
-  /* TIME TABS */
   .time-tabs { display: flex; gap: 6px; margin-bottom: 20px; flex-wrap: wrap; }
   .tab { font-size: 13px; padding: 6px 16px; border-radius: 20px; border: 1px solid var(--border); background: var(--card); color: var(--muted); cursor: pointer; transition: all 0.15s; }
-  .tab:hover { background: var(--purple-light); color: var(--purple); border-color: var(--purple-mid); }
-  .tab.active { background: var(--purple-light); color: var(--purple); border-color: var(--purple-mid); font-weight: 500; }
-
-  /* METRICS */
+  .tab:hover, .tab.active { background: var(--purple-light); color: var(--purple); border-color: var(--purple-mid); }
+  .tab.active { font-weight: 500; }
   .metrics { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 20px; }
   .metric-card { background: var(--card); border-radius: 12px; padding: 16px; border: 1px solid var(--border); }
   .metric-label { font-size: 12px; color: var(--muted); margin-bottom: 6px; }
   .metric-value { font-size: 24px; font-weight: 600; color: var(--text); }
   .metric-delta { font-size: 12px; margin-top: 4px; }
-  .delta-up { color: var(--teal); }
-  .delta-down { color: var(--coral); }
-
-  /* GRID */
+  .delta-up { color: var(--teal); } .delta-down { color: var(--coral); }
   .grid-main { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
   .grid-bottom { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
   .card { background: var(--card); border-radius: 12px; border: 1px solid var(--border); padding: 16px; }
   .card-title { font-size: 13px; font-weight: 500; color: var(--muted); margin-bottom: 14px; text-transform: uppercase; letter-spacing: 0.5px; }
-
-  /* TRENDING */
   .trend-item { display: flex; align-items: center; gap: 10px; padding: 10px 0; border-bottom: 1px solid var(--border); }
   .trend-item:last-child { border-bottom: none; padding-bottom: 0; }
   .trend-rank { font-size: 13px; font-weight: 600; color: var(--muted); min-width: 18px; }
@@ -78,62 +49,36 @@
   .trend-bar { height: 3px; border-radius: 2px; }
   .btn-alert { font-size: 11px; padding: 3px 10px; border-radius: 20px; border: 1px solid var(--border); background: var(--card); color: var(--muted); cursor: pointer; white-space: nowrap; }
   .btn-alert:hover { background: var(--purple-light); color: var(--purple); border-color: var(--purple-mid); }
-
-  /* KEYWORDS */
   .kw-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-  .kw-pill { padding: 10px 12px; border-radius: 8px; border: 1px solid var(--border); background: var(--card); }
-  .kw-text { font-size: 13px; font-weight: 500; color: var(--text); }
-  .kw-eng { font-size: 11px; color: var(--muted); margin-top: 2px; }
+  .kw-pill { padding: 10px 12px; border-radius: 8px; border: 1px solid var(--border); }
+  .kw-text { font-size: 13px; font-weight: 500; } .kw-eng { font-size: 11px; color: var(--muted); margin-top: 2px; }
   .kw-badge { font-size: 10px; padding: 2px 7px; border-radius: 10px; display: inline-block; margin-top: 4px; font-weight: 500; }
   .badge-hot { background: var(--coral-light); color: var(--coral); }
   .badge-up { background: var(--teal-light); color: var(--teal); }
   .badge-stable { background: var(--purple-light); color: var(--purple); }
-
-  /* CHART */
   .chart-wrap { position: relative; height: 180px; }
-
-  /* PROFILES */
   .profile-item { display: flex; align-items: center; gap: 10px; padding: 10px 0; border-bottom: 1px solid var(--border); }
   .profile-item:last-child { border-bottom: none; padding-bottom: 0; }
   .profile-avatar { width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 600; flex-shrink: 0; }
-  .profile-info { flex: 1; }
-  .profile-name { font-size: 13px; font-weight: 500; color: var(--text); }
-  .profile-handle { font-size: 12px; color: var(--muted); }
-  .profile-stat { font-size: 12px; color: var(--purple); font-weight: 500; }
-
-  /* ALERTS */
+  .profile-info { flex: 1; } .profile-name { font-size: 13px; font-weight: 500; } .profile-handle { font-size: 12px; color: var(--muted); } .profile-stat { font-size: 12px; color: var(--purple); font-weight: 500; }
   .alert-item { display: flex; align-items: center; gap: 10px; padding: 10px 0; border-bottom: 1px solid var(--border); }
   .alert-item:last-child { border-bottom: none; padding-bottom: 0; }
   .alert-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
-  .alert-info { flex: 1; }
-  .alert-name { font-size: 13px; font-weight: 500; color: var(--text); }
-  .alert-desc { font-size: 12px; color: var(--muted); margin-top: 1px; }
+  .alert-info { flex: 1; } .alert-name { font-size: 13px; font-weight: 500; } .alert-desc { font-size: 12px; color: var(--muted); margin-top: 1px; }
   .toggle { width: 36px; height: 20px; border-radius: 10px; border: none; cursor: pointer; position: relative; flex-shrink: 0; transition: background 0.2s; }
-  .toggle.on { background: var(--purple); }
-  .toggle.off { background: var(--border); }
+  .toggle.on { background: var(--purple); } .toggle.off { background: var(--border); }
   .toggle::after { content: ''; position: absolute; top: 2px; width: 16px; height: 16px; border-radius: 50%; background: white; transition: left 0.15s; }
-  .toggle.on::after { left: 18px; }
-  .toggle.off::after { left: 2px; }
+  .toggle.on::after { left: 18px; } .toggle.off::after { left: 2px; }
   .btn-new-alert { width: 100%; margin-top: 10px; font-size: 13px; padding: 8px; border-radius: 8px; border: 1px dashed var(--border); background: none; color: var(--muted); cursor: pointer; }
   .btn-new-alert:hover { background: var(--purple-light); color: var(--purple); border-color: var(--purple-mid); }
-
-  /* EMPTY STATE */
-  .empty-state { padding: 20px; text-align: center; color: var(--muted); font-size: 13px; }
-
-  /* UPDATE TIME */
   .update-info { font-size: 12px; color: var(--muted); text-align: right; margin-bottom: 12px; }
-
   @media (max-width: 768px) {
     .metrics { grid-template-columns: 1fr 1fr; }
-    .grid-main { grid-template-columns: 1fr; }
-    .grid-bottom { grid-template-columns: 1fr; }
+    .grid-main, .grid-bottom { grid-template-columns: 1fr; }
   }
 </style>
 </head>
 <body>
-
-<div class="loading-bar" id="loadingBar" style="width:0%"></div>
-
 <nav>
   <div class="nav-logo">
     <div class="pulse-icon">
@@ -145,7 +90,7 @@
   </div>
   <div class="nav-right">
     <div class="live-badge"><div class="live-dot"></div> Ao vivo</div>
-    <span class="data-badge demo" id="dataBadge">demo</span>
+    <span class="data-badge" id="dataBadge" style="background:#fef9c3;color:#854d0e;">● demo</span>
     <select class="country-select" id="countrySelect">
       <option value="br">🇧🇷 Brasil</option>
       <option value="us">🇺🇸 EUA</option>
@@ -156,169 +101,87 @@
     <div class="avatar">CB</div>
   </div>
 </nav>
-
 <main>
-  <p class="update-info" id="updateTime">Carregando...</p>
-
+  <p class="update-info" id="updateTime">Atualizado agora</p>
   <div class="time-tabs">
-    <button class="tab" onclick="setTab(this, '5min')">5 min</button>
-    <button class="tab active" onclick="setTab(this, '15min')">15 min</button>
-    <button class="tab" onclick="setTab(this, '30min')">30 min</button>
-    <button class="tab" onclick="setTab(this, '1h')">1 hora</button>
-    <button class="tab" onclick="setTab(this, '4h')">4 horas</button>
-    <button class="tab" onclick="setTab(this, '12h')">12 horas</button>
+    <button class="tab" onclick="setTab(this,'5min')">5 min</button>
+    <button class="tab active" onclick="setTab(this,'15min')">15 min</button>
+    <button class="tab" onclick="setTab(this,'30min')">30 min</button>
+    <button class="tab" onclick="setTab(this,'1h')">1 hora</button>
+    <button class="tab" onclick="setTab(this,'4h')">4 horas</button>
+    <button class="tab" onclick="setTab(this,'12h')">12 horas</button>
   </div>
-
   <div class="metrics">
-    <div class="metric-card">
-      <div class="metric-label">Posts analisados</div>
-      <div class="metric-value" id="m1">—</div>
-      <div class="metric-delta delta-up" id="m1d">carregando...</div>
-    </div>
-    <div class="metric-card">
-      <div class="metric-label">Assuntos em alta</div>
-      <div class="metric-value" id="m2">—</div>
-      <div class="metric-delta delta-up" id="m2d">carregando...</div>
-    </div>
-    <div class="metric-card">
-      <div class="metric-label">Engajamento médio</div>
-      <div class="metric-value" id="m3">—</div>
-      <div class="metric-delta delta-down" id="m3d">carregando...</div>
-    </div>
-    <div class="metric-card">
-      <div class="metric-label">Alertas disparados</div>
-      <div class="metric-value" id="m4">3</div>
-      <div class="metric-delta delta-up">↑ 1 novo</div>
-    </div>
+    <div class="metric-card"><div class="metric-label">Posts analisados</div><div class="metric-value" id="m1">—</div><div class="metric-delta delta-up" id="m1d">carregando...</div></div>
+    <div class="metric-card"><div class="metric-label">Assuntos em alta</div><div class="metric-value" id="m2">—</div><div class="metric-delta delta-up" id="m2d">carregando...</div></div>
+    <div class="metric-card"><div class="metric-label">Engajamento médio</div><div class="metric-value" id="m3">—</div><div class="metric-delta delta-down" id="m3d">dados do X em breve</div></div>
+    <div class="metric-card"><div class="metric-label">Alertas disparados</div><div class="metric-value" id="m4">3</div><div class="metric-delta delta-up">↑ 1 novo</div></div>
   </div>
-
   <div class="grid-main">
-    <div class="card">
-      <div class="card-title">🔥 Trending agora</div>
-      <div id="trendingList"><div class="empty-state">Carregando...</div></div>
-    </div>
+    <div class="card"><div class="card-title">🔥 Trending agora</div><div id="trendingList"><div style="color:var(--muted);font-size:13px;padding:20px 0;text-align:center">Carregando...</div></div></div>
     <div class="card">
       <div class="card-title">📈 Volume de posts</div>
-      <div class="chart-wrap">
-        <canvas id="volumeChart"></canvas>
-      </div>
+      <div class="chart-wrap"><canvas id="volumeChart"></canvas></div>
       <div class="card-title" style="margin-top:16px;">🔑 Keywords com maior engajamento</div>
-      <div class="kw-grid" id="kwGrid"><div class="empty-state">Carregando...</div></div>
+      <div class="kw-grid" id="kwGrid"></div>
     </div>
   </div>
-
   <div class="grid-bottom">
-    <div class="card">
-      <div class="card-title">⭐ Perfis em alta</div>
-      <div id="profilesList"><div class="empty-state">Carregando...</div></div>
-    </div>
-    <div class="card">
-      <div class="card-title">🔔 Meus alertas</div>
-      <div id="alertsList"></div>
-      <button class="btn-new-alert">+ novo alerta</button>
-    </div>
-    <div class="card">
-      <div class="card-title">🗂️ Por categoria</div>
-      <div id="categoriesList"></div>
-    </div>
+    <div class="card"><div class="card-title">⭐ Perfis em alta</div><div id="profilesList"></div></div>
+    <div class="card"><div class="card-title">🔔 Meus alertas</div><div id="alertsList"></div><button class="btn-new-alert">+ novo alerta</button></div>
+    <div class="card"><div class="card-title">🗂️ Por categoria</div><div id="categoriesList"></div></div>
   </div>
 </main>
-
 <script>
-// ─── CONFIGURAÇÃO ──────────────────────────────────────────────────────────
-const COLORS = ['#534AB7','#1D9E75','#D85A30','#D4537E','#378ADD'];
+const COLORS=['#534AB7','#1D9E75','#D85A30','#D4537E','#378ADD','#8B5CF6','#EC4899','#F59E0B','#10B981','#6366F1'];
+let realTrends=null,isRealData=false;
+const demo={br:{trending:[{name:'#EleicoesPresidenciais',meta:'142K posts · Política',pct:95,color:'#534AB7'},{name:'Copa do Mundo 2026',meta:'98K posts · Esportes',pct:78,color:'#1D9E75'},{name:'Dólar a R$6,40',meta:'67K posts · Economia',pct:62,color:'#D85A30'},{name:'#BBB26 Eliminação',meta:'52K posts · Entretenimento',pct:50,color:'#D4537E'},{name:'God of War Ragnarok',meta:'41K posts · Games',pct:40,color:'#378ADD'}],keywords:[{text:'#debate2026',eng:'9.1% eng.',badge:'hot',label:'🔥 explosivo'},{text:'seleção brasileira',eng:'7.8% eng.',badge:'up',label:'↑ subindo'},{text:'inflação',eng:'6.5% eng.',badge:'hot',label:'🔥 explosivo'},{text:'Neymar retorno',eng:'6.1% eng.',badge:'up',label:'↑ subindo'},{text:'IA no trabalho',eng:'5.7% eng.',badge:'stable',label:'estável'},{text:'greve docentes',eng:'5.3% eng.',badge:'up',label:'↑ subindo'}],profiles:[{name:'Whindersson Nunes',handle:'@whinderssonnunes',color:'#EEEDFE',tc:'#534AB7',stat:'+45K seguidores/dia'},{name:'Gil do Vigor',handle:'@gildovigor',color:'#E1F5EE',tc:'#1D9E75',stat:'+12K seguidores/dia'},{name:'Nikolas Ferreira',handle:'@nikolas_dm',color:'#FAECE7',tc:'#D85A30',stat:'+38K seguidores/dia'},{name:'Casimiro',handle:'@casemiro',color:'#E6F1FB',tc:'#378ADD',stat:'+22K seguidores/dia'}],volume:[12,19,14,28,35,42,38,50,47,55,62,58]},us:{trending:[{name:'#Elections2026',meta:'320K posts · Politics',pct:95,color:'#534AB7'},{name:'AI regulation',meta:'210K posts · Tech',pct:80,color:'#1D9E75'},{name:'NBA Playoffs',meta:'180K posts · Sports',pct:68,color:'#D85A30'},{name:'Taylor Swift tour',meta:'140K posts · Music',pct:55,color:'#D4537E'},{name:'#CryptoRecovery',meta:'90K posts · Finance',pct:42,color:'#378ADD'}],keywords:[{text:'#Vote2026',eng:'11.2% eng.',badge:'hot',label:'🔥 explosive'},{text:'ChatGPT ban',eng:'8.9% eng.',badge:'up',label:'↑ rising'},{text:'Bitcoin ATH',eng:'7.3% eng.',badge:'hot',label:'🔥 explosive'},{text:'LeBron record',eng:'6.8% eng.',badge:'up',label:'↑ rising'},{text:'recession fears',eng:'5.1% eng.',badge:'stable',label:'stable'},{text:'climate bill',eng:'4.9% eng.',badge:'up',label:'↑ rising'}],profiles:[{name:'Elon Musk',handle:'@elonmusk',color:'#EEEDFE',tc:'#534AB7',stat:'+120K followers/day'},{name:'Barack Obama',handle:'@barackobama',color:'#E1F5EE',tc:'#1D9E75',stat:'+45K followers/day'},{name:'Taylor Swift',handle:'@taylorswift13',color:'#FAECE7',tc:'#D85A30',stat:'+80K followers/day'},{name:'MrBeast',handle:'@mrbeast',color:'#E6F1FB',tc:'#378ADD',stat:'+55K followers/day'}],volume:[20,30,25,40,55,60,52,70,65,80,90,85]}};
+const getDemo=()=>demo[document.getElementById('countrySelect').value]||demo.br;
 
-// ─── DADOS DEMO (fallback) ─────────────────────────────────────────────────
-const demoData = {
-  br: {
-    trending: [
-      { name: '#EleicoesPresidenciais', meta: '142K posts · Política', pct: 95, color: '#534AB7' },
-      { name: 'Copa do Mundo 2026', meta: '98K posts · Esportes', pct: 78, color: '#1D9E75' },
-      { name: 'Dólar a R$6,40', meta: '67K posts · Economia', pct: 62, color: '#D85A30' },
-      { name: '#BBB26 Eliminação', meta: '52K posts · Entretenimento', pct: 50, color: '#D4537E' },
-      { name: 'God of War Ragnarok', meta: '41K posts · Games', pct: 40, color: '#378ADD' },
-    ],
-    keywords: [
-      { text: '#debate2026', eng: '9.1% eng.', badge: 'hot', label: '🔥 explosivo' },
-      { text: 'seleção brasileira', eng: '7.8% eng.', badge: 'up', label: '↑ subindo' },
-      { text: 'inflação', eng: '6.5% eng.', badge: 'hot', label: '🔥 explosivo' },
-      { text: 'Neymar retorno', eng: '6.1% eng.', badge: 'up', label: '↑ subindo' },
-      { text: 'IA no trabalho', eng: '5.7% eng.', badge: 'stable', label: 'estável' },
-      { text: 'greve docentes', eng: '5.3% eng.', badge: 'up', label: '↑ subindo' },
-    ],
-    profiles: [
-      { name: 'Whindersson Nunes', handle: '@whinderssonnunes', color: '#EEEDFE', tc: '#534AB7', stat: '+45K posts/dia' },
-      { name: 'Gil do Vigor', handle: '@gildovigor', color: '#E1F5EE', tc: '#1D9E75', stat: '+12K posts/dia' },
-      { name: 'Nikolas Ferreira', handle: '@nikolas_dm', color: '#FAECE7', tc: '#D85A30', stat: '+38K posts/dia' },
-      { name: 'Casimiro', handle: '@casemiro', color: '#E6F1FB', tc: '#378ADD', stat: '+22K posts/dia' },
-    ],
-    volume: [12, 19, 14, 28, 35, 42, 38, 50, 47, 55, 62, 58],
-    postCount: 284000,
-    topicCount: 47,
-    engRate: 6.2,
-  }
-};
-
-// ─── ESTADO GLOBAL ─────────────────────────────────────────────────────────
-let currentData = null;
-let isRealData = false;
-let currentPeriod = '15min';
-let chart;
-
-// ─── BUSCAR DADOS (Google Trends via /api/trends) ─────────────────────────
-async function fetchApifyData() {
-  showLoading(20);
-  try {
-    const country = document.getElementById('countrySelect').value;
-    const res = await fetch(`/api/trends?country=${country}`);
-    showLoading(70);
-    if (!res.ok) throw new Error('API error');
-    const trends = await res.json();
-    if (Array.isArray(trends) && trends.length > 0) {
-      showLoading(90);
-      return trends;
+async function fetchRealTrends(country){
+  try{
+    const r=await fetch('/api/trends?country='+country);
+    const items=await r.json();
+    if(Array.isArray(items)&&items.length>0){
+      realTrends=items;isRealData=true;
+      const badge=document.getElementById('dataBadge');
+      badge.style.background='#dcfce7';badge.style.color='#166534';badge.textContent='● dados reais';
+      const total=items.reduce((a,t)=>a+(parseInt((t.traffic||'0').replace(/\D/g,''))||0),0);
+      document.getElementById('m1').textContent=total>0?(total/1000).toFixed(0)+'K':items.length+' tópicos';
+      document.getElementById('m1d').textContent='↑ Google Trends · ao vivo';
+      document.getElementById('m2').textContent=items.length;
+      document.getElementById('m2d').textContent='↑ tendências ativas';
+      return items;
     }
-    return null;
-  } catch (e) {
-    console.warn('Trends fetch error:', e);
-    return null;
-  }
+  }catch(e){console.warn('API erro:',e);}
+  realTrends=null;isRealData=false;
+  const badge=document.getElementById('dataBadge');
+  badge.style.background='#fef9c3';badge.style.color='#854d0e';badge.textContent='● demo';
+  return null;
 }
 
-// ─── PROCESSAR TRENDS ─────────────────────────────────────────────────────
-function processaTweets(trends) {
-  const live    = trends.filter(t => t.status === 'Live');
-  const base = live.length > 0 ? live : trends;
-  const trending = base.sort((a, b) => a.rank - b.rank).slice(0, 5).map((t, i) => ({ name: t.trend, meta: `#${t.rank} · ${t.category || 'Trending'}`, pct: Math.round(100 - (t.rank - 1) * 15), color: COLORS[i] }));
-  const keywords = base.sort((a, b) => a.rank - b.rank).slice(0, 6).map((t, i) => { const badge = i < 2 ? 'hot' : i < 4 ? 'up' : 'stable'; return { text: t.trend, eng: t.category || 'Trending', badge, label: badge === 'hot' ? '🔥 explosivo' : badge === 'up' ? '↑ subindo' : 'estável' }; });
-  const catCount = {}; trends.forEach(t => { const cat = t.category || 'Trending'; catCount[cat] = (catCount[cat] || 0) + 1; });
-  const volume = new Array(12).fill(0); trends.forEach(t => { const idx = Math.min(11, Math.max(0, 11 - Math.floor(t.age || 0))); volume[idx]++; });
-  return { trending, keywords, profiles: [], postCount: trends.length, topicCount: base.length, engRate: (base.length / 5).toFixed(1), volume, catCount };
+function renderTrending(){
+  let items;
+  if(isRealData&&realTrends&&realTrends.length>0){
+    items=realTrends.slice(0,10).map((t,i)=>({name:t.trend,meta:(t.traffic?t.traffic+' buscas · ':'')+'Google Trends',pct:Math.max(15,100-i*9),color:COLORS[i%COLORS.length]}));
+  }else{items=getDemo().trending;}
+  document.getElementById('trendingList').innerHTML=items.map((t,i)=>`<div class="trend-item"><span class="trend-rank">${i+1}</span><div class="trend-info"><div class="trend-name">${t.name}</div><div class="trend-meta">${t.meta}</div><div class="trend-bar-wrap"><div class="trend-bar" style="width:${t.pct}%;background:${t.color}"></div></div></div><button class="btn-alert">+ alerta</button></div>`).join('');
 }
-function generateVolumeFromTweets() { return new Array(12).fill(0); }
-function renderTrending(d) { const el = document.getElementById('trendingList'); if (!d.trending || !d.trending.length) { el.innerHTML = '<div class="empty-state">Nenhum trending encontrado</div>'; return; } el.innerHTML = d.trending.map((t, i) => `<div class="trend-item"><span class="trend-rank">${i+1}</span><div class="trend-info"><div class="trend-name">${t.name}</div><div class="trend-meta">${t.meta}</div><div class="trend-bar-wrap"><div class="trend-bar" style="width:${t.pct}%;background:${t.color}"></div></div></div><button class="btn-alert">+ alerta</button></div>`).join(''); }
-function renderKeywords(d) { const el = document.getElementById('kwGrid'); if (!d.keywords || !d.keywords.length) { el.innerHTML = '<div class="empty-state">Sem dados de keywords</state>'; return; } el.innerHTML = d.keywords.map(k => `<div class="kw-pill"><div class="kw-text">${k.text}</div><div class="kw-eng">${+k.eng}</div><span class="kw-badge badge-${k.badge}">${k.label}</span></div>`).join(''); }
-function renderProfiles(d) { document.getElementById('profilesList').innerHTML = '<div class="empty-state">Dados de perfis não disponíveis nesta fonte</div>'; }
-const alerts = [{ color: '#534AB7', name: 'política + Brasil', desc: 'acima de 50K posts · tempo real', on: true }, { color: '#1D9E75', name: 'copa do mundo', desc: 'qualquer pico ÷ 15 minutos', on: true }, { color: '#888780', name: 'tecnologia + IA', desc: 'acima de 20K posts ÷ 1 hora', on: false }];
-function renderAlerts() { document.getElementById('alertsList').innerHTML = alerts.map((a, i) => `<div class="alert-item"><div class="alert-dot" style="background:${a.color}"></div><div class="alert-info"><div class="alert-name">${a.name}</div><div class="alert-desc">${a.desc}</div></div><button class="toggle ${a.on?'on':'off'}" onclick="toggleAlert(${i})"></button></div>`).join(''); }
-function toggleAlert(i) { alerts[i].on = !alerts[i].on; renderAlerts(); }
-const categories = [{ icon: '🏯️', label: 'Política', color: '#534AB7' }, { icon: '⚽', label: 'Esportes', color: '#1D9E75' }, { icon: '💰', label: 'Economia', color: '#D85A30' }, { icon: '📺', label: 'Entretenimento', color: '#D4537E' }, { icon: '💻', label: 'Tecnologia', color: '#378ADD' }];
-function renderCategories(d) {
-  const catMap = { 'Politics':{icon:'<\/>', label:'Política', color:'#534AB7'}, 'Entertainment':{icon:'🔕',label:'Entretenimento',color:'#D4537E'}, 'Sports':{icon:'⚽', label:'Esportes',color:'#1D9E75'}, 'Technology':{icon:'💻',label:'Tecnologia',color:'#378ADD'}, 'Business':{icon:'<\/>', label:'Economia',color:'#D85A30'}, 'Trending':{icon:'<\/>',label:'Trending',color:'#534AB7'}, 'Only on X':{icon:'\'x',label:'Só no X',color:'#1D9E75'}, 'Travel':{icon:'☈️',label:'Viagens',color:'#378ADD'} };
-  const counts = d.catCount || {}; const maxC = Math.max(...Object.values(counts), 1);
-  const items = Object.entries(counts).sort((a,b)=>b[1]-a[1]).slice(0,5).map(([cat,count])=>{const m=catMap[cat]||{icon:'📌',label:cat,color:'#534AB7'};return `<div style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid #e5e7eb"><span style="font-size:18px">${m.icon}</span><div style="flex:1"><div style="font-size:13px;font-weight:500">${m.label}</div><div style="height:4px;background:#f3f4f6;border-radius:2px;margin-top:4px;overflow:hidden"><div style="height:4px;width:${Math.max(10,Math.round((count/maxC)*100))}%;background:${m.color};border-radius:2px"></div></div></div><span style="font-size:12px;color:#6b7280;font-weight:500">${count}</span></div>`;});
-  document.getElementById('categoriesList').innerHTML = items.length ? items.join('') : categories.map(c => `<div style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid #e5e7eb"><span style="font-size:18px">${c.icon}</span><div style="flex:1"><div style="font-size:13px;font-weight:500">${c.label}</div><div style="height:4px;background:#f3f4f6;border-radius:2px;margin-top:4px;overflow:hidden"><div style="height:4px;width:20%;background:${c.color};border-radius:2px"></div></div></div><span style="font-size:12px;color:#6b7280;font-weight:500">—</span></div>`).join('');
-}
-function renderMetrics(d) { const fmt=n=>n>=1000?`${(n/1000).toFixed(0)}K`:n; document.getElementById('m1').textContent=fmt(d.postCount||0); document.getElementById('m1d').textContent=isRealData?'✓ dados reais':'— demo'; document.getElementById('m2').textContent=d.topicCount||0; document.getElementById('m2d').textContent=`${d.trending?.length||0} em destaque`; document.getElementById('m3').textContent=`${d.engRate||0}%`; document.getElementById('m3d').textContent='engajamento médio'; }
+function renderKeywords(){const d=getDemo();document.getElementById('kwGrid').innerHTML=d.keywords.map(k=>`<div class="kw-pill"><div class="kw-text">${k.text}</div><div class="kw-eng">${k.eng}</div><span class="kw-badge badge-${k.badge}">${k.label}</span></div>`).join('');}
+function renderProfiles(){const d=getDemo();document.getElementById('profilesList').innerHTML=d.profiles.map(p=>`<div class="profile-item"><div class="profile-avatar" style="background:${p.color};color:${p.tc}">${p.name.split(' ').map(n=>n[0]).join('').slice(0,2)}</div><div class="profile-info"><div class="profile-name">${p.name}</div><div class="profile-handle">${p.handle}</div></div><div class="profile-stat">${p.stat}</div></div>`).join('');}
+const alerts=[{color:'#534AB7',name:'política + Brasil',desc:'acima de 50K posts · tempo real',on:true},{color:'#1D9E75',name:'copa do mundo',desc:'qualquer pico · 15 minutos',on:true},{color:'#888780',name:'tecnologia + IA',desc:'acima de 20K posts · 1 hora',on:false}];
+function renderAlerts(){document.getElementById('alertsList').innerHTML=alerts.map((a,i)=>`<div class="alert-item"><div class="alert-dot" style="background:${a.color}"></div><div class="alert-info"><div class="alert-name">${a.name}</div><div class="alert-desc">${a.desc}</div></div><button class="toggle ${a.on?'on':'off'}" onclick="toggleAlert(${i})"></button></div>`).join('');}
+function toggleAlert(i){alerts[i].on=!alerts[i].on;renderAlerts();}
+const cats=[{icon:'🏛️',label:'Política',count:14,color:'#534AB7'},{icon:'⚽',label:'Esportes',count:9,color:'#1D9E75'},{icon:'💰',label:'Economia',count:8,color:'#D85A30'},{icon:'📺',label:'Entretenimento',count:7,color:'#D4537E'},{icon:'💻',label:'Tecnologia',count:9,color:'#378ADD'}];
+function renderCategories(){document.getElementById('categoriesList').innerHTML=cats.map(c=>`<div style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid #e5e7eb;"><span style="font-size:18px">${c.icon}</span><div style="flex:1"><div style="font-size:13px;font-weight:500">${c.label}</div><div style="height:4px;background:#f3f4f6;border-radius:2px;margin-top:4px;overflow:hidden"><div style="height:4px;width:${c.count*5}%;background:${c.color};border-radius:2px"></div></div></div><span style="font-size:12px;color:#6b7280;font-weight:500">${c.count}</span></div>`).join('');}
 let chart;
-function renderChart(d) { const labels=Array.from({length:12},(_,i)=>`${String(i).padStart(2,'0')}h`); if(chart)chart.destroy(); chart=new Chart(document.getElementById('volumeChart'),{type:'line',data:{labels,datasets:[{data:d.volume||new Array(12).fill(0),borderColor:'#534AB7',backgroundColor:'rgba(83,74,183,0.08)',borderWidth:2,tension:0.4,fill:true,pointRadius:0}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{display:false},ticks:{size:11}},y:{grid:{color:'#f3f4f6'},ticks:{size:11}}}}}); }
-function renderAll(d) { currentData=d; renderTrending(d); renderKeywords(d); renderProfiles(d); renderAlerts(); renderCategories(d); renderChart(d); renderMetrics(d); const badge=document.getElementById('dataBadge'); if(isRealData){badge.textContent='dados reais';badge.className='data-badge real'}else{badge.textContent='demo';badge.className='data-badge demo'} const now=new Date(); document.getElementById('updateTime').textContent=`Atualizado às ${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')}:${now.getSeconds().toString().padStart(2,'0')}`; }
-function showLoading(pct){ document.getElementById('loadingBar').style.width=pct+'%'; }
-function hideLoading(){ const bar=document.getElementById('loadingBar'); bar.style.width='100%'; setTimeout(()=>{ window._ladO=bar.style.width='0%'; },400); }
-async function init(){ renderAll(demoData.br); const t=await fetchApifyData(); if(t&&t.length>0){isRealData=true;renderAll(processaTweets(t));}else{isRealData=false;renderAll(demoData.br);} hideLoading(); }
-function setTab(el,period){ document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active')); el.classList.add('active'); if(currentData)renderAll(currentData); }
-document.getElementById('countrySelect').addEventListener('change',()=>{ const c=document.getElementById('countrySelect').value; if(!isRealData||c!=='br'){renderAll(demoData[c]||demoData.br);}else if(currentData){renderAll(currentData);} });
-init(); setInterval(init,15*60*1000);
+function renderChart(){const d=getDemo();const labels=['00','01','02','03','04','05','06','07','08','09','10','11'].map(h=>h+'h');if(chart)chart.destroy();chart=new Chart(document.getElementById('volumeChart'),{type:'line',data:{labels,datasets:[{data:d.volume,borderColor:'#534AB7',backgroundColor:'rgba(83,74,183,0.08)',borderWidth:2,tension:0.4,fill:true,pointRadius:0}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{display:false},ticks:{font:{size:11},color:'#9ca3af'}},y:{grid:{color:'#f3f4f6'},ticks:{font:{size:11},color:'#9ca3af'}}}}});}
+function setTab(el,p){document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));el.classList.add('active');renderAll();}
+function renderAll(){renderTrending();renderKeywords();renderProfiles();renderAlerts();renderCategories();renderChart();const n=new Date();document.getElementById('updateTime').textContent='Atualizado às '+n.getHours().toString().padStart(2,'0')+':'+n.getMinutes().toString().padStart(2,'0')+':'+n.getSeconds().toString().padStart(2,'0');}
+async function init(country){country=country||document.getElementById('countrySelect').value;renderAll();await fetchRealTrends(country);renderTrending();}
+document.getElementById('countrySelect').addEventListener('change',function(){init(this.value);});
+setInterval(()=>init(),15*60*1000);
+init();
 </script>
 </body>
 </html>
