@@ -18,8 +18,8 @@ export default async function handler(req) {
     const rssRes = await fetch(rssUrl);
     const rssText = await rssRes.text();
 
-    const titles = [...rssText.matchAll(/<title><!\[CDATA\[(.+?)\]\]><\/title>/g)].slice(1);
-    const approx = [...rssText.matchAll(/<ht:trafficVolume>(.+?)<\/ht:trafficVolume>/g)];
+    const titles = [...rssText.matchAll(/<item>[\s\S]*?<title>(.+?)<\/title>/g)];
+    const approx = [...rssText.matchAll(/<ht:approx_traffic>(.+?)<\/ht:approx_traffic>/g)];
 
     const items = titles.map((m, i) => ({
       rank: i + 1,
